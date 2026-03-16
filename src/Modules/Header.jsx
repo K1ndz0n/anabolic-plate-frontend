@@ -37,7 +37,7 @@ function Header() {
     return ( 
         <header className="header">
             <div className="logo" onClick={() => navigate("/")}>
-                <img src="/public/logo.png" />
+                <img src="/logo.png" />
             </div>
 
             <div className="navRight">
