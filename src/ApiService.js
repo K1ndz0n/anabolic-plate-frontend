@@ -1,5 +1,5 @@
 export default class ApiService {
-    static API_URL = "https://localhost:8081";
+    static API_URL = "anabolic-plate-backend-production.up.railway.app";
 
     static async getRecipeThumbnails(params) {
         const filteredParams = Object.fromEntries(
