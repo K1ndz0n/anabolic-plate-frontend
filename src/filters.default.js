@@ -1,0 +1,18 @@
+export const DEFAULT_FILTERS = {
+    search: "",
+    minRating: null,
+    maxRating: null,
+    minOpinionCount: null,
+    maxOpinionCount: null,
+    minKcal: null,
+    maxKcal: null,
+    minProtein: null,
+    maxProtein: null,
+    minCarbs: null,
+    maxCarbs: null,
+    minFat: null,
+    maxFat: null,
+    orderBy: "rating",
+    order: "desc",
+    hasNutrition: false,
+};
