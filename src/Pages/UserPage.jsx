@@ -1,10 +1,10 @@
-import { use, useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom"
 import ApiService from "../ApiService";
 import RecipesList from "../Modules/RecipesList";
 import UserOpinion from "../Modules/UserOpinion";
 import PageManager from "../Modules/PageManager";
-import { ClipLoader } from "react-spinners";
+import LoaderComponent from "../Modules/LoaderComponent";
 
 
 function UserPage() {
@@ -25,27 +25,37 @@ function UserPage() {
     const [isLoaded, setIsLoaded] = useState(false);
 
     useEffect(() => {
-        ApiService.getUserByUsername(username)
-            .then(user => {
-                if (!user) {
-                    navigate("/404");
+        const fetchAll = async () => {
+            const [userData, opinionsData] = await Promise.all([
+                ApiService.getUserByUsername(username),
+                ApiService.getUserOpinions(username, page, pageSize), 
+            ]);
+
+            if (!userData) {
+                navigate("/404");
+            }
+
+            if (token) {
+                const [loggedUserData, isFollowedData] = await Promise.all([
+                    ApiService.getLoggedUser(token),
+                    ApiService.isFollowed(username, token)
+                ])
+
+                setIsFollowed(isFollowedData);
+
+                if (loggedUserData.username === username) {
+                    setIsLoggedUsersPage(true);
                 }
+            }  
 
-                setUserDetails(user);
-                setFollowAmount(user.followAmount);
-                ApiService.getUserOpinions(username, page, pageSize)
-                    .then(setOpinions);
+            setUserDetails(userData);
+            setFollowAmount(userData.followAmount);
+            setOpinions(opinionsData);
+            
+            setIsLoaded(true);
+        }
 
-                ApiService.getLoggedUser(token).then(user => {
-                    if (user.username === username) {
-                        setIsLoggedUsersPage(true);
-                    } else {
-                        ApiService.isFollowed(username, token).then(setIsFollowed);
-                    }
-                });
-
-                setIsLoaded(true);
-            });
+        fetchAll();
     }, [username]);
 
     var opinionComponent = 
@@ -81,14 +91,12 @@ function UserPage() {
         } catch (err) {}
     }
 
+    const fetchRecipes = useCallback((params) => {
+        return ApiService.getUserRecipeThumbnails(params, username);
+    }, [username]);
+
     if (!isLoaded) {
-        return (
-            <div>
-                <div style={{ display: 'flex', justifyContent: 'center', padding: '10px', marginTop: "10px"}}>
-                    <ClipLoader color="white" size={50} />
-                </div>
-                <p className="noContentInfo">Ładowanie zawartości...</p>
-            </div>)
+        return (<LoaderComponent />)
     }
 
     return(
@@ -134,7 +142,7 @@ function UserPage() {
             {activeTab === "recipes"
             ? <RecipesList
                 key={username}
-                fetchFunction={(params) => ApiService.getUserRecipeThumbnails(params, username)}
+                fetchFunction={fetchRecipes}
                 isUserPage={true} 
                 /> : opinionComponent}
         </div>

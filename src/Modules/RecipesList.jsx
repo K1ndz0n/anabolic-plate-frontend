@@ -3,71 +3,80 @@ import Thumbnail from "../Modules/Thumbnail";
 import FilterPanel from "../Modules/FIlterPanel";
 import { DEFAULT_FILTERS } from "../filters.default";
 import PageManager from "../Modules/PageManager";
-import { ClipLoader } from "react-spinners";
+import LoaderComponent from "./LoaderComponent";
 
 function RecipesList({ fetchFunction, isUserPage }) {
     const [draftFilters, setDraftFilters] = useState(DEFAULT_FILTERS);
-
     const [filters, setFilters] = useState(draftFilters);
-    const [data, setData] = useState([]);
+    const [data, setData] = useState({ items: [], totalCount: 0 });
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
     
-    const [isLoaded, setIsLoaded] = useState(false);
+    const [isComponentLoaded, setIsComponentLoaded] = useState(false);
+    const [recipesLoaded, setRecipesLoaded] = useState(false);
 
     useEffect(() => {
+        let isMounted = true;
+        setRecipesLoaded(false);
+
         fetchFunction({
             ...filters,
             page,
             pageSize
-        }).then(data => {
-            setData(data);
-            setIsLoaded(true);
+        }).then(responseData => {
+            if (isMounted) {
+                setData(responseData);
+                setRecipesLoaded(true);
+                setIsComponentLoaded(true);
+            }
+        }).catch(err => {
+            console.error(err);
+            if (isMounted) setRecipesLoaded(true);
         });
-    }, [filters, page, pageSize]);
+
+        return () => { isMounted = false; };
+    }, [filters, page, pageSize, fetchFunction]);
 
     useEffect(() => {
         setPage(1);
     }, [pageSize]);
 
     function applyFilters() {
-        setFilters(draftFilters);
+        setFilters({ ...draftFilters }); 
         setPage(1);
     }
 
-    if (!isLoaded) {
-        return (
-            <div>
-                <div style={{ display: 'flex', justifyContent: 'center', padding: '10px', marginTop: "10px"}}>
-                    <ClipLoader color="white" size={50} />
-                </div>
-                <p className="noContentInfo">Ładowanie zawartości...</p>
-            </div>)
+    if (!isComponentLoaded) {
+        return (<LoaderComponent />);
     }
 
     return (
         <div className="appContent">
-            {data.totalCount > 0
-            && <FilterPanel
-                    filters={draftFilters}
-                    setFilters={setDraftFilters}
-                    onApply={applyFilters}/>}
+            {data.totalCount > 0 && <FilterPanel
+                filters={draftFilters}
+                setFilters={setDraftFilters}
+                onApply={applyFilters}/>}
             
             <div>
-                {data.items?.map(d => (
-                    <Thumbnail key={d.recipeId} thumbnail={d} isUserPage={isUserPage} />
-                ))}
+                {recipesLoaded ? (
+                    data.items?.length > 0 ? (
+                        data.items.map(d => (
+                            <Thumbnail key={d.recipeId} thumbnail={d} isUserPage={isUserPage} />
+                        ))
+                    ) : (
+                        <p style={{marginTop: "200px"}} className="noContentInfo">Brak przepisów</p>
+                    )
+                ) : (<LoaderComponent />)}
 
-                {data.itemsCount > 0 && isLoaded
-                ? <PageManager
-                    page={page}
-                    setPage={setPage}
-                    pageSize={pageSize}
-                    setPageSize={setPageSize}
-                    hasNext={data.hasNext}
-                    totalPages={data.totalPages}/>
-                : <p className="noContentInfo">Brak przepisów</p>}
-                
+                {data.itemsCount > 0 && recipesLoaded && (
+                    <PageManager
+                        page={page}
+                        setPage={setPage}
+                        pageSize={pageSize}
+                        setPageSize={setPageSize}
+                        hasNext={data.hasNext}
+                        totalPages={data.totalPages}/>
+                )}
             </div>
         </div>
     );

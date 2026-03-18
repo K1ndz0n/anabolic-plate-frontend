@@ -5,7 +5,8 @@ import Opinion from "../Modules/Opinion";
 import StarRating from "../Modules/StarRating";
 import PageManager from "../Modules/PageManager";
 import Units from "../Units";
-
+import LoaderComponent from "../Modules/LoaderComponent";
+import LoadingButton from "../Modules/LoadingButton";
 
 function RecipeDetails() {
     const { id } = useParams();
@@ -14,6 +15,9 @@ function RecipeDetails() {
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
 
+    const [showAddPhoto, setShowAddPhoto] = useState(false);
+    const [photoError, setPhotoError] = useState("");
+    const [file, setFile] = useState(null);
     const [currentPhtoto, setCurrentPhoto] = useState(0);
     const [showDeletePhoto, setShowDeletePhoto] = useState(false);
 
@@ -23,15 +27,11 @@ function RecipeDetails() {
     const [protein, setProtein] = useState(0);
     const [carbs, setCarbs] = useState(0);
     const [fat, setFat] = useState(0);
-    const [showEditNutrition, setShowEditNutrition] = useState(false);
+    
     const [nutritionValid, setNutritionValid] = useState(false);
     const [nutritionError, setNutritionError] = useState("");
-
+    const [showEditNutrition, setShowEditNutrition] = useState(false);
     const [showDeleteNutrition, setShowDeleteNutrition] = useState(false);
-
-    const [showAddPhoto, setShowAddPhoto] = useState(false);
-    const [photoError, setPhotoError] = useState("");
-    const [file, setFile] = useState(null);
 
     const [showDeleteRecipe, setShowDeleteRecipe] = useState(false);
 
@@ -44,52 +44,72 @@ function RecipeDetails() {
 
     const [isLiked, setIsLiked] = useState(false);
 
+    const [isLoaded, setIsLoaded] = useState(false);
+    const [reloadTrigger, setReoladTrigger] = useState(0);
+
     const navigate = useNavigate();
 
     useEffect(() => {
-        ApiService.getRecipeDetails(id).then(recipe => {
-            if (!recipe) {
+        const fetchAll = async () => {
+            setIsLoaded(false);
+            setShowEditNutrition(false);
+            setShowDeleteNutrition(false);
+            setShowEditOpinion(false);
+            setShowEditOpinion(false);
+            setShowDeleteOpinion(false);
+            setShowAddPhoto(false);
+            setShowDeletePhoto(false);
+            setShowEditNutrition(false);
+            setProtein(0);
+            setCarbs(0);
+            setFat(0);
+
+            const recipeData = await ApiService.getRecipeDetails(id);
+            if (!recipeData) {
                 navigate("/404");
-                return;
             }
 
-            ApiService.getLoggedUser(token).then(user => {
-                if (user?.id === recipe.author?.id) {
-                    setIsUsersRecipe(true);
+            setRecipeDetails(recipeData);
+            if (recipeData.nutrition) {
+                setProtein(recipeData.nutrition.protein);
+                setCarbs(recipeData.nutrition.carbs);
+                setFat(recipeData.nutrition.fat);
+            }
+
+            if (token) {
+                const [loggedUserData, myOpinionData, isLikedData] = await Promise.all([
+                        ApiService.getLoggedUser(token),
+                        ApiService.getMyRecipeOpinion(id, token),
+                        ApiService.isLiked(id, token),
+                        
+                ]);
+
+                setIsUsersRecipe(
+                    loggedUserData.id === recipeData.author.id
+                );
+
+                if (myOpinionData) {
+                    setUserOpinion(myOpinionData);
+                    setUserOpinionRating(myOpinionData.rating);
+                    setUserOpinionComment(myOpinionData.comment);
                 }
 
-                ApiService.getMyRecipeOpinion(id, token).then(opinion => {
-                    if (opinion) {
-                        setUserOpinion(opinion);
-                        setUserOpinionRating(opinion.rating);
-                        setUserOpinionComment(opinion.comment);
-                    }
-                });
-
-                ApiService.isLiked(id, token).then(setIsLiked);
-            });
-
-            setRecipeDetails(recipe);
-            if (recipe.nutrition) {
-                setProtein(recipe.nutrition.protein);
-                setCarbs(recipe.nutrition.carbs);
-                setFat(recipe.nutrition.fat);
+                setIsLiked(isLikedData);
             }
-        });
-    }, [id, token, navigate]);
-    
+
+            setIsLoaded(true);
+        }
+
+        fetchAll()
+    }, [id, token, reloadTrigger, navigate]);
 
     useEffect(() => {
         if (token) {
-            ApiService.getRecipeOpinionsWhenLogged(id, page, pageSize, token)
-            .then(setOpinions);
+            ApiService.getRecipeOpinionsWhenLogged(id, page, pageSize, token).then(setOpinions);
         } else {
-            ApiService.getRecipeOpinions(id, page, pageSize)
-            .then(setOpinions);
+            ApiService.getRecipeOpinions(id, page, pageSize).then(setOpinions);
         }
-
-        
-    }, [id, page, pageSize]);
+    }, [page, pageSize, reloadTrigger])
 
     useEffect(() => {
         setNutritionValid(
@@ -103,11 +123,11 @@ function RecipeDetails() {
         <div>
             <p>Czy na pewno chcesz usunąć ten przepis? Efekt będzie nieodwracalny.</p>
             <div className="editRecipeButtons">
+                <LoadingButton
+                    text={"Tak"}
+                    className={"deleteButton"}
+                    onClick={() => handleDeleteRecipe()} />
                 <button
-                    className="deleteButton"
-                    onClick={() => handleDeleteRecipe()}>Tak</button>
-                <button
-                    disabled={!recipeDetails.nutrition}
                     onClick={() => setShowDeleteRecipe(false)}>Nie</button>
             </div>
         </div>
@@ -116,11 +136,11 @@ function RecipeDetails() {
         <div>
             <p>Czy na pewno chcesz usunąć informację żywieniową?</p>
             <div className="editRecipeButtons">
+                <LoadingButton
+                    text={"Tak"}
+                    className={"deleteButton"}
+                    onClick={() => handleDeleteNutrition()} />
                 <button
-                    className="deleteButton"
-                    onClick={() => handleDeleteNutrition()}>Tak</button>
-                <button
-                    disabled={!recipeDetails.nutrition}
                     onClick={() => setShowDeleteNutrition(false)}>Nie</button>
             </div>
         </div>
@@ -129,11 +149,11 @@ function RecipeDetails() {
         <div className="deletePhotoComponent">
             <p>Czy na pewno chcesz usunąć to zdjęcie?</p>
             <div className="editRecipeButtons">
+                <LoadingButton
+                    text={"Tak"}
+                    className={"deleteButton"}
+                    onClick={() => handleDeletePhoto(photos[currentPhtoto].id)} />
                 <button
-                    className="deleteButton"
-                    onClick={() => handleDeletePhoto(photos[currentPhtoto].id)}>Tak</button>
-                <button
-                    disabled={!recipeDetails.nutrition}
                     onClick={() => setShowDeletePhoto(false)}>Nie</button>
             </div>
         </div>
@@ -175,13 +195,11 @@ function RecipeDetails() {
             {showDeleteNutrition
             ? deleteNutritionComponent
             : <div className="editRecipeButtons">
-                <button
+                <LoadingButton
+                    text={recipeDetails.nutrition ? "Zapisz" : "Dodaj"}
                     disabled={!nutritionValid}
-                    onClick={() => handleEditNutrition()}>
-                        {recipeDetails.nutrition
-                        ? "Zapisz"
-                        : "Dodaj"}
-                </button>
+                    onClick={() => handleEditNutrition()} />
+
                 <button onClick={() => {
                     setShowEditNutrition(false)
                     setNutritionError("")}}>Anuluj</button>
@@ -223,7 +241,7 @@ function RecipeDetails() {
             </div>}
     </div>
 
-    var ingredients = 
+    var ingredients =
         <ul style={{margin: 0}}>
             {recipeDetails.ingredients?.map(i => (
                 <li style={{margin: "5px", wordBreak: 'break-word'}}>{i.name}: {i.amount} {Units.unitIdToPL(i.unit)}</li>
@@ -239,16 +257,17 @@ function RecipeDetails() {
 
     const photos = recipeDetails?.photoUrls ?? [];
 
-    var addPhotoComponent = 
+    var addPhotoComponent =
         <div>
             <input
                 type="file"
                 accept="image/jpeg, image/png, image/jpg"
                 onChange={(e) => setFile(e.target.files[0])} />
 
-            <button 
+            <LoadingButton
+                text={"Zatwierdź"}
                 disabled={file === null}
-                onClick={() => handleAddPhoto()}>Zatwierdź</button>
+                onClick={() => handleAddPhoto()} />
             <button onClick={() => {
                 setShowAddPhoto(false)
                 setPhotoError("")}}>Anuluj</button>
@@ -288,8 +307,11 @@ function RecipeDetails() {
             <div className="miniPhotos">
                 {photos.map((p, index) => (
                     <img src={ApiService.API_URL + p.path}
-                        onClick={() => setCurrentPhoto(index)}
-                        className={`miniPhoto ${index === currentPhtoto ?
+                        onClick={() => {
+                            if (!showDeletePhoto) {
+                                setCurrentPhoto(index)
+                            }}}
+                        className={`miniPhoto ${index === currentPhtoto && !showDeletePhoto ? 
                             "active" : "inactive"
                         }`} />
                 ))}
@@ -358,16 +380,20 @@ function RecipeDetails() {
                     ? <div>
                         <p>Czy na pewno chcesz usunąć swoją opinię?</p>
                         <div className="editRecipeButtons">
-                            <button
-                                className="deleteButton"
-                                onClick={() => handleDeleteOpinion()}>Tak</button>
+                            <LoadingButton
+                                text={"Tak"}
+                                className={"deleteButton"}
+                                onClick={() => handleDeleteOpinion()} />
+
                             <button onClick={() => setShowDeleteOpinion(false)}>Nie</button>
                         </div>
                     </div>
                     : <div className="editRecipeButtons">
-                        <button
+                        <LoadingButton
+                            text={userOpinion ? "Zapisz" : "Dodaj"}
                             disabled={userOpinionRating === 0}
-                            onClick={() => handleEditOpinion()}>{userOpinion ? "Zapisz" : "Dodaj"}</button>
+                            onClick={() => handleEditOpinion()} />
+
                         <button onClick={() => {
                             setUserOpinionError("")
                             setShowEditOpinion(false)}}>Anuluj</button>
@@ -393,8 +419,8 @@ function RecipeDetails() {
             } else {
                 await ApiService.addOpinion(id, userOpinionData, token);
             }
-            
-            window.location.reload();
+
+            setReoladTrigger(reloadTrigger + 1);
         } catch (err) {
             setUserOpinionError(err.message);
         }
@@ -404,7 +430,7 @@ function RecipeDetails() {
         try {
             setUserOpinionError("");
             await ApiService.deleteOpinion(id, token);
-            window.location.reload();
+            setReoladTrigger(reloadTrigger + 1);
         } catch (err) {
             setUserOpinionError(err.message);
         }
@@ -417,7 +443,7 @@ function RecipeDetails() {
         try {
             setPhotoError("");
             await ApiService.addPhoto(id, formData, token);
-            window.location.reload();
+            setReoladTrigger(reloadTrigger + 1);
         } catch (err) {
             setPhotoError(err.message);
         }
@@ -427,7 +453,7 @@ function RecipeDetails() {
         try {
             setPhotoError("");
             await ApiService.deletePhoto(photoId, token);
-            window.location.reload();
+            setReoladTrigger(reloadTrigger + 1);
         } catch (err) {
             setPhotoError(err.message);
         }
@@ -449,8 +475,7 @@ function RecipeDetails() {
                 await ApiService.addNutrition(id, nutritionData, token);
             }
 
-            window.location.reload(); 
-            
+            setReoladTrigger(reloadTrigger + 1);
         } catch (err) {
             setNutritionError(err.message);
         }
@@ -460,7 +485,7 @@ function RecipeDetails() {
         try {
             setNutritionError("");
             await ApiService.deleteNutrition(id, token);
-            window.location.reload(); 
+            setReoladTrigger(reloadTrigger + 1); 
         } catch (err) {
             setNutritionError(err.message);
         }
@@ -483,6 +508,10 @@ function RecipeDetails() {
                 setIsLiked(true);
             }
         } catch (err) {console.error("ZŁAPAŁEM BŁĄD:", err);}
+    }
+
+    if (!isLoaded) {
+        return <LoaderComponent />
     }
 
     return (

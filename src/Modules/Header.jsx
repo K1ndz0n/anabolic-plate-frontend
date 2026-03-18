@@ -1,12 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ApiService from "../ApiService";
+import { BeatLoader } from "react-spinners";
 
 function Header() {
     const navigate = useNavigate();
     const isLoggedIn = !!localStorage.getItem("token");
     const [userData, setUserData] = useState();
     const [menuOpen, setMenuOpen] = useState(false);
+    const [isLoaded, setIsLoaded] = useState(false);
+
     const menuRef = useRef(null);
 
     const handleLogout = () => {
@@ -15,10 +18,19 @@ function Header() {
     }
 
     useEffect(() => {
-        if (isLoggedIn) {
-            ApiService.getLoggedUser(localStorage.getItem("token"))
-                .then(setUserData);
+        const fetchAll = async () => {
+            setIsLoaded(false);
+
+            if (isLoggedIn) {
+                const user = await ApiService.getLoggedUser(localStorage.getItem("token"));
+                setUserData(user);
+                setIsLoaded(true);
+            }
+
+            setIsLoaded(true);
         }
+
+        fetchAll();
     }, [isLoggedIn]);
 
     useEffect(() => {
@@ -39,7 +51,8 @@ function Header() {
             <div className="logo" onClick={() => navigate("/")}>
                 <img src="/logo.png" />
             </div>
-
+            
+            {isLoaded ?
             <div className="navRight">
                 {!isLoggedIn ? (
                     <>
@@ -91,6 +104,7 @@ function Header() {
                     </>
                 )}
             </div>
+            : <BeatLoader style={{marginRight: "50px"}} color="white" size={8}/>}
         </header>
     );
 }

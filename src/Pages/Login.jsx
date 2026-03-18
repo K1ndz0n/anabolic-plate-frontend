@@ -1,6 +1,7 @@
 import { useState } from "react"
 import ApiService from "../ApiService";
 import { useNavigate } from "react-router-dom";
+import LoadingButton from "../Modules/LoadingButton";
 
 function Login() {
     const navigate = useNavigate();
@@ -50,8 +51,11 @@ function Login() {
                 />
             </div>
 
-            <button onClick={() => handleLogin()}
-                disabled={email === "" || password === ""}>Zaloguj</button>
+            <LoadingButton
+                disabled={email === "" || password === ""}
+                text={"Zaloguj"}
+                onClick={() => handleLogin()} />
+
             <p>lub</p>
             <button onClick={() => navigate("/register")}>Zarejestruj się</button>
 

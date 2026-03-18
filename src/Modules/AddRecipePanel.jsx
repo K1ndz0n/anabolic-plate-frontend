@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Units from "../Units";
+import LoadingButton from "./LoadingButton";
 
 function AddRecipePanel({ fetchFunction, recipeDetails }) {
     const navigate = useNavigate();
@@ -288,7 +289,7 @@ function AddRecipePanel({ fetchFunction, recipeDetails }) {
                             {steps.map((step, index) => (
                                 <li key={index}>
                                     <textarea
-                                        ref={(el) => (inputRefs.current[index] = el)} // Przypisanie refa
+                                        ref={(el) => (inputRefs.current[index] = el)}
                                         value={step}
                                         onChange={(e) => handleChange(index, e.target.value)}
                                         onKeyDown={(e) => handleKeyDown(index, e)}
@@ -304,13 +305,10 @@ function AddRecipePanel({ fetchFunction, recipeDetails }) {
                 </div>
             </div>
 
-            <button
+            <LoadingButton
+                text={recipeDetails ? "Zapisz przepis" : "Dodaj przepis"}
                 disabled={name === "" || !ingredientsValid}
-                onClick={() => handleRequest()}>
-                {recipeDetails
-                ? "Zapisz przepis"
-                : "Dodaj przepis"}
-            </button>
+                onClick={() => handleRequest()} />
 
             {error && <p className="errorMessage">{error}</p>}
         </div>

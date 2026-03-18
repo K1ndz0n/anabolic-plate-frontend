@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import ApiService from "../ApiService";
 import { useNavigate } from "react-router-dom";
 import ReCAPTCHA from "react-google-recaptcha";
+import LoadingButton from "../Modules/LoadingButton";
 
 function validatePassword(password) {
     if (password.length < 6) {
@@ -104,10 +105,13 @@ function Register() {
                 />
             </div>
             
-            <button onClick={() => handleRegister()}
+            <LoadingButton
+                text={"Zarejestruj się"}
                 disabled={email === "" || password === "" 
-                || confirmPassword === "" || password !== confirmPassword
-                || !recaptchaToken}>Zarejestruj się</button>
+                    || confirmPassword === "" || password !== confirmPassword
+                    || !recaptchaToken}
+                onClick={() => handleRegister()} />
+
             <p>Posiadasz konto?</p>
             <button onClick={() => navigate("/login")}>Zaloguj się</button>
 

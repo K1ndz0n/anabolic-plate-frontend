@@ -2,7 +2,7 @@ import MiniThumbnailPanel from '../Modules/MiniThumbnailPanel';
 import {  useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ApiService from '../ApiService';
-import { ClipLoader } from "react-spinners";
+import LoaderComponent from '../Modules/LoaderComponent';
 
 function Home() {
     const navigate = useNavigate();
@@ -31,13 +31,7 @@ function Home() {
     }, []);
 
     if (!isLoaded) {
-        return (
-            <div>
-                <div style={{ display: 'flex', justifyContent: 'center', padding: '10px', marginTop: "10px"}}>
-                    <ClipLoader color="white" size={50} />
-                </div>
-                <p className="noContentInfo">Ładowanie zawartości...</p>
-            </div>)
+        return (<LoaderComponent />)
     }
 
     return (
