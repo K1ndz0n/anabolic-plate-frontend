@@ -1,4 +1,4 @@
-## URL: https://anabolic-plate.netlify.app/
+## URL: https://anabolic-plate.netlify.app
 
 Application offers creating, editing, commenting, browsing through recipes and adding photos to them.
 
