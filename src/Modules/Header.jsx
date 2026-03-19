@@ -48,9 +48,16 @@ function Header() {
 
     return ( 
         <header className="header">
-            <div className="logo" onClick={() => navigate("/")}>
-                <img src="/logo.png" />
+            <div className="logo">
+                <img src="/logo.png" onClick={() => navigate("/")} />
+
+                <span
+                    className="navItem cta"
+                    onClick={() => navigate("/Recipes")} >
+                    Do przepisów →
+                </span>
             </div>
+
             
             {isLoaded ?
             <div className="navRight">
