@@ -184,8 +184,8 @@ select:hover {
 
 .thumbnailImage {
   height: 160px;
-  max-width: 160px;
-  width: auto;
+  width: 160px;
+  min-width: 160px;
   object-fit: cover;
   border-radius: 5%;
   opacity: 0.95;
