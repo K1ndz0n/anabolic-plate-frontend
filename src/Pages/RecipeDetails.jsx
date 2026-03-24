@@ -616,7 +616,7 @@ function RecipeDetails() {
                         hasNext={opinions.hasNext} 
                         totalPages={opinions.totalPages}/>
                 </>
-                : <p className="noContentInfo">Brak opinii</p>}       
+                : !userOpinion && <p className="noContentInfo">Brak opinii</p>}       
             </div>
         </div>
     );

@@ -32,6 +32,7 @@ function Register() {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false)
     const [error, setError] = useState("");
+    const buttonRef = useRef(null);
 
     const recaptchaRef = useRef();
     const [recaptchaToken, setRecaptchaToken] = useState(null);
@@ -39,7 +40,13 @@ function Register() {
     const validateEmail = (email) => {
         const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return re.test(email);
-    };
+    }
+
+    const handleKeyDown = async (e) => {
+        if (e.key === "Enter") {
+            buttonRef.current?.click();
+        }
+    }
 
     const handleRegister = async (e) => {
         if (!validateEmail(email)) {
@@ -69,15 +76,18 @@ function Register() {
             <input 
                 type="text"
                 placeholder="Email"
-                onChange={(e) => setEmail(e.target.value)} />
+                onChange={(e) => setEmail(e.target.value)} 
+                onKeyDown={(e) => handleKeyDown(e)} />
             <input 
                 type="text"
                 placeholder="Nazwa użytkownika"
-                onChange={(e) => setUsername(e.target.value)} />
+                onChange={(e) => setUsername(e.target.value)}
+                onKeyDown={(e) => handleKeyDown(e)} />
             <input 
                 type={showPassword ? "text" : "password"}
                 placeholder="hasło"
-                onChange={(e) => setPassword(e.target.value)} />
+                onChange={(e) => setPassword(e.target.value)}
+                onKeyDown={(e) => handleKeyDown(e)} />
 
             <div className="showPasswordRow">
                 <label>Pokaż hasło</label>
@@ -96,7 +106,8 @@ function Register() {
                     ? "confirmPassword error"
                     : "confirmPassword"
                 }
-                onChange={(e) => setConfirmPassword(e.target.value)} />
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                onKeyDown={(e) => handleKeyDown(e)} />
             <div className="captchaWrapper">
                 <ReCAPTCHA
                     sitekey="6LcmgYgsAAAAAMKFAhPObj9P2WVOalldBgqejlsl"
@@ -106,6 +117,7 @@ function Register() {
             </div>
             
             <LoadingButton
+                ref={buttonRef}
                 text={"Zarejestruj się"}
                 disabled={email === "" || password === "" 
                     || confirmPassword === "" || password !== confirmPassword

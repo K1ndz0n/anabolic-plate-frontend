@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useRef } from "react"
 import ApiService from "../ApiService";
 import { useNavigate } from "react-router-dom";
 import LoadingButton from "../Modules/LoadingButton";
@@ -9,13 +9,14 @@ function Login() {
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false)
     const [error, setError] = useState("");
+    const buttonRef = useRef(null);
 
     const validateEmail = (email) => {
         const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return re.test(email);
     };
 
-    const handleLogin = async (e) => {
+    const handleLogin = async () => {
         if (!validateEmail(email)) {
             setError("Wpisz poprawny email");
             return;
@@ -30,9 +31,15 @@ function Login() {
         }
     }
 
+    const handleKeyDown = async (e) => {
+        if (e.key === "Enter") {
+            buttonRef.current?.click();
+        }
+    }
+
 
     return(
-        <div className="form">
+        <div className="form" onKeyDown={(e) => handleKeyDown(e)}>
             <input 
                 type="text"
                 placeholder="email"
@@ -52,12 +59,14 @@ function Login() {
             </div>
 
             <LoadingButton
+                ref={buttonRef}
                 disabled={email === "" || password === ""}
                 text={"Zaloguj"}
                 onClick={() => handleLogin()} />
 
             <p>lub</p>
-            <button onClick={() => navigate("/register")}>Zarejestruj się</button>
+            <button
+                onClick={() => navigate("/register")}>Zarejestruj się</button>
 
             {error && <p className="errorMessage">{error}</p>}
         </div>

@@ -562,6 +562,8 @@ h2 {
   grid-template-columns: minmax(0, 2fr) 1fr;
   gap: 24px;
   align-items: start;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #333;
 }
 .recipeInfoWrapper {
   min-width: 0;
@@ -629,10 +631,14 @@ h2 {
   align-items: start;
   gap: 30%;
   margin-top: 20px;
-  background-color: #181818;
-  border: 1px solid #333;
-  border-radius: 10px;
-  padding: 20px;
+  border-bottom: 1px solid #333;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.bottomSection li {
+  font-size: 17px;
+  padding-bottom: 10px;
 }
 
 .ingredients {

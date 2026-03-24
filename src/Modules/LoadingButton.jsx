@@ -1,7 +1,7 @@
 import { BeatLoader } from "react-spinners";
 import { useState } from "react";
 
-function LoadingButton({ className, text, disabled, onClick }) {
+function LoadingButton({ ref, className, text, disabled, onClick }) {
     const [isClicked, setIsClicked] = useState(false);
 
     const handleClick = async () => {
@@ -15,7 +15,11 @@ function LoadingButton({ className, text, disabled, onClick }) {
     };
 
     return(
-        <button className={className} disabled={disabled || isClicked} onClick={handleClick}>
+        <button
+            ref={ref}
+            className={className} 
+            disabled={disabled || isClicked} 
+            onClick={handleClick}>
             {isClicked ? <BeatLoader color="white" size={8}/> : text}
         </button>
     )
