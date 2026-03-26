@@ -20,7 +20,7 @@ function MiniThumbnail({ thumbnail }) {
             >
             {photo}
             <div className="thumbnailText"> 
-                <p style={{fontSize: 23, margin: 0, wordBreak: 'break-word'}}>{thumbnail.name}</p>       
+                <p style={{fontSize: 20, margin: 0, wordBreak: 'break-word'}}>{thumbnail.name}</p>       
                 <StarRating rating={thumbnail.rating} /> ({thumbnail.opinionAmount})
                 <Link
                     to={`/user/${thumbnail.author?.username}`}

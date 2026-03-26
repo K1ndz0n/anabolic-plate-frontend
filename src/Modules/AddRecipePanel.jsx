@@ -271,7 +271,7 @@ function AddRecipePanel({ fetchFunction, recipeDetails }) {
                                                 </option>
                                             ))}
                                     </select>
-                                    <button onClick={() => deleteIngredient(index)}>Usuń</button>
+                                    <button className="ingredientRemoveButton" onClick={() => deleteIngredient(index)}>&times;</button>
                                 </li>   
                             ))}
                         </ul>
@@ -296,7 +296,7 @@ function AddRecipePanel({ fetchFunction, recipeDetails }) {
                                         onPaste={(e) => handlePaste(index, e)}
                                         placeholder="Wpisz krok i naciśnij Enter..."
                                     />
-                                    <button onClick={() => deleteStep(index)}>Usuń</button>
+                                    <button className="ingredientRemoveButton" onClick={() => deleteStep(index)}>&times;</button>
                                 </li>   
                             ))}
                         </ul>
