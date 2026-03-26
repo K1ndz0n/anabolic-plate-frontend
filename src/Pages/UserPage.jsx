@@ -104,7 +104,7 @@ function UserPage() {
             <div className="userTopSection">
                 
                 <div className="upperRow">
-                    <p>Profil użytkownika {userDetails?.username}</p>
+                    <p style={{margin: "10px", wordBreak: "break-word", textAlign: "center"}}>Profil użytkownika {userDetails?.username}</p>
                     {token && !isLoggedUsersPage &&
                         <button className="likeButton"
                             onClick={() => handleFollowAction()} 

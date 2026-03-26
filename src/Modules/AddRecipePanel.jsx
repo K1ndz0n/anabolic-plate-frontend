@@ -284,7 +284,7 @@ function AddRecipePanel({ fetchFunction, recipeDetails }) {
 
                 <div className="addRecipeHalf">
                     <div className="addRecipeItems">
-                        <p style={{margin: "5px", fontSize: "25px"}}>Instrukcja przygotowania (opcjonalnie)</p>
+                        <p style={{margin: "5px", fontSize: "25px", textAlign: "center"}}>Instrukcja przygotowania (opcjonalnie)</p>
                         <ul>
                             {steps.map((step, index) => (
                                 <li key={index}>

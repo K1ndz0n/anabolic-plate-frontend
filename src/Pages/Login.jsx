@@ -64,7 +64,7 @@ function Login() {
                 text={"Zaloguj"}
                 onClick={() => handleLogin()} />
 
-            <p>lub</p>
+            <p>Nie posiadasz konta?</p>
             <button
                 onClick={() => navigate("/register")}>Zarejestruj się</button>
 

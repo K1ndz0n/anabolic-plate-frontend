@@ -121,7 +121,7 @@ function RecipeDetails() {
 
     var deleteRecipeComponent = 
         <div>
-            <p>Czy na pewno chcesz usunąć ten przepis? Efekt będzie nieodwracalny.</p>
+            <p style={{textAlign: "center"}}>Czy na pewno chcesz usunąć ten przepis? Efekt będzie nieodwracalny.</p>
             <div className="editRecipeButtons">
                 <LoadingButton
                     text={"Tak"}
@@ -134,7 +134,7 @@ function RecipeDetails() {
 
     var deleteNutritionComponent = 
         <div>
-            <p>Czy na pewno chcesz usunąć informację żywieniową?</p>
+            <p style={{textAlign: "center"}}>Czy na pewno chcesz usunąć informację żywieniową?</p>
             <div className="editRecipeButtons">
                 <LoadingButton
                     text={"Tak"}
@@ -264,13 +264,15 @@ function RecipeDetails() {
                 accept="image/jpeg, image/png, image/jpg"
                 onChange={(e) => setFile(e.target.files[0])} />
 
-            <LoadingButton
-                text={"Zatwierdź"}
-                disabled={file === null}
-                onClick={() => handleAddPhoto()} />
-            <button onClick={() => {
-                setShowAddPhoto(false)
-                setPhotoError("")}}>Anuluj</button>
+            <div className="editRecipeButtons">
+                <LoadingButton
+                    text={"Zatwierdź"}
+                    disabled={file === null}
+                    onClick={() => handleAddPhoto()} />
+                <button onClick={() => {
+                    setShowAddPhoto(false)
+                    setPhotoError("")}}>Anuluj</button>
+            </div>
         </div>
 
     var photoComponent =
@@ -357,7 +359,7 @@ function RecipeDetails() {
                 <div className="userOpinionComponent">
                     <p style={{fontSize: 20, margin: "5px", color: "#666"}}>Twoja opinia</p>
                     <StarRating rating={userOpinion.rating} />
-                    <p style={{wordBreak: 'break-word'}}>{userOpinion.comment}</p>
+                    <p style={{wordBreak: 'break-word', textAlign: "center"}}>{userOpinion.comment}</p>
                     <button onClick={() => setShowEditOpinion(true)}>Edytuj opinię</button>
                     
                 </div>}
@@ -378,7 +380,7 @@ function RecipeDetails() {
                     
                     {showDeleteOpinion
                     ? <div>
-                        <p>Czy na pewno chcesz usunąć swoją opinię?</p>
+                        <p style={{textAlign: "center"}}>Czy na pewno chcesz usunąć swoją opinię?</p>
                         <div className="editRecipeButtons">
                             <LoadingButton
                                 text={"Tak"}

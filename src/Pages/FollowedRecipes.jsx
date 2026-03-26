@@ -7,7 +7,7 @@ function FollowedRecipes() {
     return(
         <div>
             <div className="userTopSection">
-                <p style={{margin: "20px 5px 0 0", fontSize: "25px"}}>Przepisy od obserwowanych twórców</p>
+                <p style={{margin: "20px 5px 0 0", fontSize: "25px", textAlign: "center"}}>Przepisy od obserwowanych twórców</p>
             </div>
             
             <RecipesList 

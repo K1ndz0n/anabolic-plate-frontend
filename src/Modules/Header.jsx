@@ -54,7 +54,7 @@ function Header() {
                 <span
                     className="navItem cta"
                     onClick={() => navigate("/Recipes")} >
-                    Do przepisów →
+                    Przepisy →
                 </span>
             </div>
 
@@ -72,10 +72,6 @@ function Header() {
                     </>
                 ) : (
                     <>
-                        <span className="navItem" onClick={handleLogout}>
-                            Wyloguj
-                        </span>
-                    
                         <div className="userMenu" ref={menuRef}>
                             <span
                                 className="navItem"
@@ -86,6 +82,10 @@ function Header() {
 
                             {menuOpen && (
                                 <div className="userDropdown">
+                                    <button onClick={() => {navigate("/add-recipe")
+                                                            setMenuOpen(false)}}>
+                                        + Dodaj przepis
+                                    </button>
                                     <button onClick={() => {navigate(`/user/${userData?.username}`);
                                                             setMenuOpen(false)}}>
                                         Mój profil
@@ -98,16 +98,13 @@ function Header() {
                                                             setMenuOpen(false)}}>
                                         Przepisy od obserwowanych twórców
                                     </button>
+                                    <button onClick={() => {handleLogout()
+                                                            setMenuOpen(false)}}>
+                                        Wyloguj
+                                    </button>
                                 </div>
                             )}
                         </div>
-
-                        <span
-                            className="navItem cta"
-                            onClick={() => navigate("/add-recipe")}
-                        >
-                            + Dodaj przepis
-                        </span>
                     </>
                 )}
             </div>

@@ -49,6 +49,10 @@ input::placeholder {
   color: #777;
 }
 
+input, textarea {
+  font-size: 16px;
+}
+
 select {
   background: #222;
   color: white;
@@ -70,11 +74,16 @@ select:hover {
 }
 
 .logo img {
-  margin-left: 20px;
-  margin-top: 5px;
-  margin-right: 50px;
+  margin: 5px 50px 0 20px;
   cursor: pointer;
   height: 35px;
+}
+
+@media (max-width: 1024px) {
+  .logo img {
+    margin: 0;
+    padding: 0;
+  }
 }
 
 .captcha-wrapper {
@@ -89,6 +98,19 @@ select:hover {
   color: #ffffff;
   padding: 16px 24px;
   border-bottom: 1px solid #2a2a2a;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  top: 0;
+  z-index: 101;
+}
+
+@media (max-width: 1024px) {
+  .header {
+    padding: 16px 10px;
+  }
 }
 
 .footer {
@@ -125,17 +147,45 @@ select:hover {
   width: 53%;
   
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 24px;
   align-items: start;
 }
 
-.heroSectionLeft {
-  width: 90%;
+.heroSectionLoginButtons {
+  display: flex;
+  justify-content: center;
 }
 
 .heroSectionRight {
   margin-top: 50px;
+}
+
+.heroSectionRight button {
+  display: block;
+  margin: 0 auto 10px auto;
+}
+
+@media (max-width: 1024px) {
+  .heroSection {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    border: none;
+    border-radius: 0;
+  }
+
+  .heroSectionLeft {
+    margin: 0 20px 0 20px;
+  }
+
+  .heroSectionRight {
+    margin: 0 20px 10px 20px;
+  }
+
+  .heroSectionRight p {
+    margin-top: 10px;
+  }
 }
 
 .thumbnail {
@@ -143,43 +193,67 @@ select:hover {
   align-items: flex-start;
   background-color: #1e1e1e;
   border: 1px solid #333;
-  border-radius: 20px;
+  border-radius: 15px;
   box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.7);
   padding: 20px;
   margin: 10px auto;
   text-align: left;
-  max-width: 50%;
+  width: 50%;
+}
+
+.thumbnailTitle {
+  font-size: 30px;
+  margin: 0;
+  word-break: 'break-word';
 }
 
 .miniThumbnail {
-  flex: 0 0 auto;
   width: 300px;
   display: flex;
   align-items: flex-start;
   background-color: #1e1e1e;
   border: 1px solid #333;
-  border-radius: 10px;
+  border-radius: 15px;
   box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.7);
   padding: 20px;
   margin: 0;
   text-align: left;
-  scroll-snap-align: start;
+}
+
+@media (max-width: 1024px) {
+  .thumbnail {
+    width: 85%;
+  }
+
+  .thumbnailTitle {
+    font-size: 23px;
+  }
+
+  .miniThumbnail {
+    width: 85%;
+  }
 }
 
 .miniThumbnailsPanel {
-  text-align: center;
-  width: fit-content;
-  margin: 30px auto;
+  width: 100%; 
+  margin: 30px 0;
   padding-bottom: 10px;
+  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
 }
 
 .miniThumbnails {
   display: flex;
   flex-direction: row;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   gap: 16px;
-  padding: 8px;
-  margin: 0 auto;
+  padding: 0;
+  padding-top: 10px;
+  justify-content: center; 
+  max-width: 1200px;
 }
 
 .thumbnailImage {
@@ -258,19 +332,29 @@ h2 {
   margin: 10px;
 }
 
-.filtersWrapper {
+
+
+.searchBar {
   position: sticky;
   top: 0;
   z-index: 100;
-}
-
-.searchBar {
   display: flex;
   align-items: center;
   gap: 8px;
+  padding-top: 10px;
   margin: 10px auto;
   width: 52%;
 }
+
+.searchBar button {
+    padding: 5px 10px 5px 10px;
+}
+
+@media (max-width: 1024px) {
+  .searchBar {
+    width: 95%;
+  }
+} 
 
 .searchBar input {
   flex: 1;
@@ -284,6 +368,7 @@ h2 {
 
 .filters {
   display: flex;
+  flex-direction: row;
   gap: 24px;
   width: 50%;
   margin: 0 auto 20px auto;
@@ -311,6 +396,7 @@ h2 {
 .filters input[type="number"],
 
 .filters input::placeholder {
+  margin: 5px;
   color: #666;
 }
 
@@ -326,7 +412,6 @@ h2 {
 .filters label {
   margin-right: 10px;
 }
-
 
 .filterGroup {
   grid-column: span 2;
@@ -353,6 +438,50 @@ h2 {
 
 .filters {
   animation: fadeSlide 0.2s ease-out;
+}
+
+@media (max-width: 1024px) {
+  .filters {
+    flex-direction: column;
+    width: 85%;
+    gap: 16px;
+    padding: 20px;
+    align-items: center;
+  }
+
+  .filters-left {
+    text-align: left;
+    border-bottom: 1px solid #333;
+    padding-bottom: 10px;
+  }
+
+  .filters-right {
+    width: 80%;
+  }
+
+  .filtersInputWrapper {
+    margin-bottom: 18px;
+  }
+
+  .filterButtons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  .filterButtons button {
+    flex: 1;
+    margin-right: 0;
+    padding: 12px;
+  }
+
+  .filters input[type="number"],
+  .filters input[type="text"] {
+    width: 80%;
+    padding: 12px;
+    font-size: 16px;
+  }
 }
 
 @keyframes fadeSlide {
@@ -554,7 +683,7 @@ h2 {
 .recipeLayout {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 16px;
+  padding-top: 16px;
 }
 
 .topSection {
@@ -565,6 +694,7 @@ h2 {
   padding-bottom: 10px;
   border-bottom: 1px solid #333;
 }
+
 .recipeInfoWrapper {
   min-width: 0;
   max-width: 100%;
@@ -600,6 +730,40 @@ h2 {
   justify-content: center;
   align-items: flex-end;
   margin-bottom: 10px;
+}
+
+@media (max-width: 1024px) {
+  .recipeLayout {
+    padding: 0;
+  }
+
+  .photoComponent {
+    margin: 0;
+    padding: 0;
+  }
+
+  .photoViewer {
+    border-radius: 0;
+  }
+
+  .topSection {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .topSection > div:first-child {
+    order: 2;
+  }
+
+  .topSection > div:last-child {
+    order: 1;
+  }
+
+  .recipeInfo {
+    border: none;
+    border-radius: 0;
+    margin: 0;
+  }
 }
 
 .nutritionInputsRow label {
@@ -660,6 +824,21 @@ h2 {
   margin-bottom: 10px;
 }
 
+@media (max-width: 1024px) {
+  .bottomSection {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .ingredients {
+    border-bottom: 1px solid #333;
+  }
+
+  .opinion {
+    width: 90%;
+  }
+}
+
 .opinions {
   display: flex;
   flex-direction: column;
@@ -694,6 +873,17 @@ h2 {
   margin-top: 20px;
 }
 
+@media (max-width: 1024px) {
+  .userOpinionWrapper {
+    width: 95%;
+  }
+
+  .userOpinionEdit textarea{
+    width: 90%;
+    font-size: 16px;
+  }
+}
+
 .pageManager button:disabled {
   opacity: 0.4;
   cursor: default;
@@ -719,6 +909,16 @@ h2 {
   flex-direction: column;
   align-items: center;
   gap: 12px;
+}
+
+@media (max-width: 1024px) {
+  .form {
+    width: 100%;
+    padding: 20px 0 50px 0;
+    margin: 0;
+    background: none;
+    border: none;
+  }
 }
 
 .form input {
@@ -841,19 +1041,6 @@ h2 {
   text-decoration: underline;
 }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  padding: 14px 28px;
-  background-color: #121212;
-  border-bottom: 1px solid #2a2a2a;
-  position: relative;
-  top: 0;
-  z-index: 101;
-}
-
 .navRight {
   display: flex;
   align-items: center;
@@ -871,12 +1058,22 @@ h2 {
   transition: background-color 0.15s, border-color 0.15s;
 }
 
+@media (max-width: 1024px) {
+  .navItem {
+    padding: 8px 0;
+  }
+
+  .navRight {
+    gap: 10px;
+  }
+}
+
 .navItem:hover {
   background-color: #292929;
 }
 
 .navItem.cta {
-  padding: 6px 14px;
+  padding: 10px 10px;
   border-radius: 999px;
   background-color: #2f2f2f;
 }
@@ -941,6 +1138,12 @@ h2 {
   width: 25%;
 }
 
+@media (max-width: 1024px) {
+  .userOpinion {
+    width: 85%;
+  }
+}
+
 .addRecipeWrapper {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -987,13 +1190,12 @@ h2 {
   width: 80px;
   height: 40px;
   
-  /* To centruje tekst wewnątrz przycisku, gdy ma on display: flex */
   display: flex;
-  justify-content: center; /* Centrowanie w poziomie */
-  align-items: center;     /* Centrowanie w pionie */
+  justify-content: center;
+  align-items: center;
   
-  text-align: center;      /* Możesz zostawić jako fallback */
-  padding: 0;              /* Usuń padding, który może wypychać tekst */
+  text-align: center;
+  padding: 0;
 }
 
 .addRecipeItems select {
@@ -1046,7 +1248,6 @@ textarea {
   word-break: break-word;
 
   font-family: inherit;
-  font-size: 14px;
 }
 
 .formField {
@@ -1055,4 +1256,44 @@ textarea {
   align-items: center;
   gap: 5px;
   width: 100%;
+}
+
+@media (max-width: 1024px) {
+  .addRecipeWrapper {
+    grid-template-columns: 1fr;
+    gap: 0;
+    border-bottom: 1px solid #333;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  .addRecipeHalf {
+    min-width: 0;
+    width: 100%;
+    gap: 0;
+    padding-bottom: 20px;
+    border-top: 1px solid #333;
+  }
+
+  .addRecipeHalf p {
+    padding-top: 20px;
+  }
+
+  .addRecipeItems {
+    background: none;
+    margin: 0;
+    padding: 5px;
+  }
+
+  .addRecipeItems input[type="text"] {
+    width: 100%;
+  }
+
+  .addRecipeItems input[type="number"] {
+    width: 60px;
+  }
+
+  .addRecipeItems select {
+    width: 60px;
+  }
 }

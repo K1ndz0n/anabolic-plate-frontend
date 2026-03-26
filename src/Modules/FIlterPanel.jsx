@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { DEFAULT_FILTERS } from "../filters.default";
+import { Search, Filter } from 'lucide-react';
 
 function FilterPanel({ filters, setFilters, onApply }) {
 
@@ -33,7 +34,7 @@ function FilterPanel({ filters, setFilters, onApply }) {
     const [showFilters, setShowFilters] = useState(false);
     
     return(
-        <div className="filtersWrapper">
+        <>
             <div className="searchBar">
                 <input
                     value={filters.search}
@@ -41,11 +42,11 @@ function FilterPanel({ filters, setFilters, onApply }) {
                     placeholder="Nazwa przepisu, składnik, autor..." />
 
                 <button onClick={onApply}>
-                    Szukaj
+                    <Search size={20} color="#888" className="searchIcon" />
                 </button>
 
                 <button onClick={() => setShowFilters(f => !f)}>
-                    {showFilters ? "Ukryj filtry ▲" : "Pokaż filtry ▼"}
+                    <Filter size={18} />
                 </button>
 
             </div>
@@ -53,7 +54,7 @@ function FilterPanel({ filters, setFilters, onApply }) {
             {showFilters && (
             <div className="filters">
                 <div className="filters-left">
-                    <div>
+                    <div className="filtersInputWrapper">
                         <label>Ocena (1 do 5)</label>
                         <input
                             type="number"
@@ -70,7 +71,7 @@ function FilterPanel({ filters, setFilters, onApply }) {
                             placeholder="Max" />
                     </div>
 
-                    <div>
+                    <div className="filtersInputWrapper">
                         <label>Ilość ocen</label>
                         <input
                             type="number"
@@ -95,7 +96,7 @@ function FilterPanel({ filters, setFilters, onApply }) {
                             onChange={e => updateFilter("hasNutrition", e.target.checked)} />
                     </div>
 
-                    <div>
+                    <div className="filtersInputWrapper">
                         <label>Kalorie</label>
                         <input
                             type="number"
@@ -114,7 +115,7 @@ function FilterPanel({ filters, setFilters, onApply }) {
                             placeholder="Max" />
                     </div>
 
-                    <div>
+                    <div className="filtersInputWrapper">
                         <label>Białko</label>
                         <input
                             type="number"
@@ -133,7 +134,7 @@ function FilterPanel({ filters, setFilters, onApply }) {
                             placeholder="Max" />
                     </div>
 
-                    <div>
+                    <div className="filtersInputWrapper">
                         <label>Węglowodany</label>
                         <input
                             type="number"
@@ -152,7 +153,7 @@ function FilterPanel({ filters, setFilters, onApply }) {
                             placeholder="Max" />
                     </div>
 
-                    <div>
+                    <div className="filtersInputWrapper">
                         <label>Tłuszcz</label>
                         <input
                             type="number"
@@ -220,7 +221,7 @@ function FilterPanel({ filters, setFilters, onApply }) {
                     </div>
                 </div>
             </div> )}
-        </div>
+        </>
     );
 
 }

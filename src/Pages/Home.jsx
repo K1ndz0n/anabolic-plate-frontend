@@ -44,8 +44,10 @@ function Home() {
                     {!token && 
                         <>
                             <p>Chcesz dodawać swoje własne przepisy bądź oceniać inne? Załóż konto!</p>
-                            <button style={{marginRight: "10px"}} onClick={() => navigate("/register")}>Zarejestruj się</button>
-                            <button onClick={() => navigate("/login")}>Zaloguj się</button>
+                            <div className='heroSectionLoginButtons'>
+                                <button style={{marginRight: "10px"}} onClick={() => navigate("/register")}>Zarejestruj się</button>
+                                <button onClick={() => navigate("/login")}>Zaloguj się</button>
+                            </div>
                         </>}
                 </div>
                 <div className='heroSectionRight'>

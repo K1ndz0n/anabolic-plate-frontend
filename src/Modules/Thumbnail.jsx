@@ -20,7 +20,7 @@ function Thumbnail({ thumbnail, isUserPage }) {
             >
             {photo}
             <div className="thumbnailText"> 
-                <p style={{fontSize: 30, margin: 0, wordBreak: 'break-word'}}>{thumbnail.name}</p>        
+                <p className="thumbnailTitle">{thumbnail.name}</p>        
                 <StarRating rating={thumbnail.rating} /> ({thumbnail.opinionAmount})
                 <p style={{wordBreak: 'break-word'}}>{thumbnail.description}</p>
                 <Link
