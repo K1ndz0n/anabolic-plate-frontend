@@ -106,7 +106,7 @@ function UserPage() {
                 <div className="upperRow">
                     <p style={{margin: "10px", wordBreak: "break-word", textAlign: "center"}}>Profil użytkownika {userDetails?.username}</p>
                     {token && !isLoggedUsersPage &&
-                        <button className="likeButton"
+                        <button className="followButton"
                             onClick={() => handleFollowAction()} 
                             style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
                         >

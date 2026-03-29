@@ -1,6 +1,6 @@
 import ApiService from "../ApiService";
 import { useNavigate, useParams, Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Opinion from "../Modules/Opinion";
 import StarRating from "../Modules/StarRating";
 import PageManager from "../Modules/PageManager";
@@ -47,6 +47,8 @@ function RecipeDetails() {
     const [isLoaded, setIsLoaded] = useState(false);
     const [reloadTrigger, setReoladTrigger] = useState(0);
 
+    const miniPhotoRefs = useRef([]);
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -63,6 +65,7 @@ function RecipeDetails() {
             setProtein(0);
             setCarbs(0);
             setFat(0);
+            setCurrentPhoto(0);
 
             const recipeData = await ApiService.getRecipeDetails(id);
             if (!recipeData) {
@@ -118,6 +121,17 @@ function RecipeDetails() {
             && fat >= 0 && fat <= 9999
         )
     }, [protein, carbs, fat]);
+
+    useEffect(() => {
+        const activePhoto = miniPhotoRefs.current[currentPhtoto];
+            if (activePhoto) {
+                activePhoto.scrollIntoView({
+                    behavior: "smooth",
+                    inline: "center",
+                    block: "nearest"
+                });
+            }
+    }, [currentPhtoto]);
 
     var deleteRecipeComponent = 
         <div>
@@ -308,7 +322,9 @@ function RecipeDetails() {
 
             <div className="miniPhotos">
                 {photos.map((p, index) => (
-                    <img src={ApiService.API_URL + p.path}
+                    <img
+                        ref={el => miniPhotoRefs.current[index] = el}
+                        src={ApiService.API_URL + p.path}
                         onClick={() => {
                             if (!showDeletePhoto) {
                                 setCurrentPhoto(index)
